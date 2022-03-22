@@ -1,4 +1,9 @@
-package com.game;
+package com.company.classes;
+
+import com.company.helper.Random;
+import com.company.helper.Console;
+import com.company.helper.Strings;
+import com.company.helper.enums.JustifyMode;
 
 import java.util.ArrayList;
 
@@ -10,7 +15,7 @@ public class Game
     public static final int LOSE_POINT = 1;
 
     private static final int MIN_NUMBER = 0;
-    private static final int MAX_NUMBER = 1;
+    private static final int MAX_NUMBER = 100;
 
 
     private int turn;
@@ -19,7 +24,7 @@ public class Game
     private int lowerBound;
     private int upperBound;
 
-    private boolean assistedBounds;
+    private boolean assistedBoundsEnabled;
 
 
     public Game()
@@ -64,7 +69,7 @@ public class Game
     public void Start()
     {
         System.out.print("How many Players >");
-        int playerCount = Main.ScanInt();
+        int playerCount = Console.ScanInt();
 
         if (playerCount <= 0) return;
 
@@ -77,13 +82,11 @@ public class Game
     }
 
 
-
-
     private void Join()
     {
-        var ordinalExpression = Main.ToOrdinal(players.size()+1);
+        var ordinalExpression = Strings.ToOrdinal(players.size()+1);
         System.out.printf("Please, Enter %s Player's name >", ordinalExpression);
-        String name = Main.ScanString();
+        String name = Console.ScanString();
         players.add(new Player(name));
     }
 
@@ -96,12 +99,13 @@ public class Game
     {
         SetAssistedBounds();
 
+        Player winner;
         while (true)
         {
-            Player winner = Play();
+            winner = Play();
 
             System.out.print("Do You Want to Play Again? (Y/N) >");
-            String answer = Main.ScanString();
+            String answer = Console.ScanString();
 
             if (answer.equalsIgnoreCase("Y"))
             {
@@ -109,6 +113,7 @@ public class Game
                 continue;
             }
 
+            Quit();
             break;
         }
     }
@@ -126,13 +131,13 @@ public class Game
 
             if (currentGuess < pickedNumber)
             {
-                if (assistedBounds) lowerBound = Math.max(lowerBound, currentGuess+1);
+                if (assistedBoundsEnabled) lowerBound = Math.max(lowerBound, currentGuess+1);
 
                 System.out.println("Wrong guess, please guess a bigger number!");
             }
             else if (currentGuess > pickedNumber)
             {
-                if (assistedBounds) upperBound = Math.min(upperBound, currentGuess-1);
+                if (assistedBoundsEnabled) upperBound = Math.min(upperBound, currentGuess-1);
 
                 System.out.println("Wrong guess, please guess a smaller number!");
             }
@@ -158,6 +163,13 @@ public class Game
         }
 
         PrintLeaderBoard();
+    }
+
+    private void Quit()
+    {
+        var sessionWinner = RankedList().get(0);
+
+        System.out.printf("%s wins with %d Point(s)!", sessionWinner, sessionWinner.GetPoint());
     }
 
     private ArrayList<Player> RankedList()
@@ -205,20 +217,20 @@ public class Game
     {
         int boardLength = GetBoardLength();
 
-        System.out.println(Main.MultiplyString("-", boardLength));
-        System.out.println("|" + Main.Justify("LEADERS BOARD", boardLength-2, JustifyMode.CENTER) + "|");
-        System.out.println(Main.MultiplyString("-", boardLength));
+        System.out.println(Strings.Multiply("-", boardLength));
+        System.out.println("|" + Console.Justify("LEADERS BOARD", boardLength-2, JustifyMode.CENTER) + "|");
+        System.out.println(Strings.Multiply("-", boardLength));
 
-        var ranks = Main.Justify("RANKS", STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var players = Main.Justify("PLAYERS", STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var winStrikes = Main.Justify("WIN STRIKES", STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var loseStrikes = Main.Justify("LOSE STRIKES", STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var totalWins = Main.Justify("TOTAL WINS", STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var totalLoses = Main.Justify("TOTAL LOSES", STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var totalPoints = Main.Justify("TOTAL POINTS", STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var ranks = Console.Justify("RANKS", STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var players = Console.Justify("PLAYERS", STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var winStrikes = Console.Justify("WIN STRIKES", STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var loseStrikes = Console.Justify("LOSE STRIKES", STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var totalWins = Console.Justify("TOTAL WINS", STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var totalLoses = Console.Justify("TOTAL LOSES", STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var totalPoints = Console.Justify("TOTAL POINTS", STAT_BAR_LENGTH, JustifyMode.CENTER);
 
         System.out.printf("|%s|%s|%s|%s|%s|%s|%s|%n", ranks, players, winStrikes, loseStrikes, totalWins, totalLoses, totalPoints);
-        System.out.println(Main.MultiplyString("-", boardLength));
+        System.out.println(Strings.Multiply("-", boardLength));
     }
 
     private Player CurrentPlayer()
@@ -237,17 +249,17 @@ public class Game
 
     private int PickNumber()
     {
-        return Main.RandomInt(MIN_NUMBER, MAX_NUMBER);
+        return Random.Range(MIN_NUMBER, MAX_NUMBER);
     }
 
     private void SetAssistedBounds()
     {
         System.out.print("Do You Want to Enable Assisted Bounds? (Y/N) >");
-        String answer = Main.ScanString();
+        String answer = Console.ScanString();
 
-        this.assistedBounds = answer.equalsIgnoreCase("Y");
+        this.assistedBoundsEnabled = answer.equalsIgnoreCase("Y");
 
-        if (this.assistedBounds)
+        if (this.assistedBoundsEnabled)
         {
             System.out.println("Assisted Bounds has been Enabled!");
             return;

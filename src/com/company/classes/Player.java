@@ -1,4 +1,8 @@
-package com.game;
+package com.company.classes;
+
+import com.company.helper.Console;
+import com.company.helper.Strings;
+import com.company.helper.enums.JustifyMode;
 
 public class Player
 {
@@ -29,7 +33,7 @@ public class Player
     {
         this.stats.guess++;
         System.out.printf("It's your turn %s (%d,%d)>", this.name, lower, upper);
-        return Main.ScanInt();
+        return Console.ScanInt();
     }
 
     public void ResetGuess()
@@ -49,17 +53,17 @@ public class Player
 
     public void PrintStatsBoard(int rank)
     {
-        var ordinalRank = Main.Justify(Main.ToOrdinal(rank), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var ordinalRank = Console.Justify(Strings.ToOrdinal(rank), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
         int nameLength = Math.min(this.name.length(), Game.STAT_BAR_LENGTH);
-        var name = Main.Justify(this.name.substring(0, nameLength), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var winStrikes = Main.Justify(String.valueOf(this.stats.winStrike), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var loseStrikes = Main.Justify(String.valueOf(this.stats.loseStrike), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var totalWins = Main.Justify(String.valueOf(this.stats.totalWin), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var totalLoses = Main.Justify(String.valueOf(this.stats.totalLose), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
-        var totalPoints = Main.Justify(String.valueOf(this.GetPoint()), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var name = Console.Justify(this.name.substring(0, nameLength), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var winStrikes = Console.Justify(String.valueOf(this.stats.winStrike), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var loseStrikes = Console.Justify(String.valueOf(this.stats.loseStrike), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var totalWins = Console.Justify(String.valueOf(this.stats.totalWin), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var totalLoses = Console.Justify(String.valueOf(this.stats.totalLose), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
+        var totalPoints = Console.Justify(String.valueOf(this.GetPoint()), Game.STAT_BAR_LENGTH, JustifyMode.CENTER);
 
         System.out.printf("|%s|%s|%s|%s|%s|%s|%s|%n", ordinalRank, name, winStrikes, loseStrikes, totalWins, totalLoses, totalPoints);
-        System.out.println(Main.MultiplyString("-", Game.GetBoardLength()));
+        System.out.println(Strings.Multiply("-", Game.GetBoardLength()));
     }
 
     @Override
